@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reveal Party — EP2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ONBOARDING -->
+  <section id="onboarding" class="screen active">
+    <div class="ob"><div class="ob-card">
+      <div class="ob-badge">EP2 — REVEAL PARTY</div>
+      <h1 class="ob-title">Rejoindre la session</h1>
+      <div class="ob-field"><label>Pseudo *</label><input class="inp" id="pseudo" type="text" placeholder="Ton blaze..." maxlength="20" autocomplete="off"></div>
+      <div class="ob-field"><label>Photo de profil <span class="opt">(optionnel)</span></label><div class="av-zone" id="avZone"><input type="file" id="avInput" accept="image/*" hidden><div class="av-prev" id="avPrev">+</div><span>Clique pour upload</span></div></div>
+      <button class="btn accent full" id="btnJoin" disabled>▶ Entrer</button>
+    </div></div>
+  </section>
+
+  <!-- HUB -->
+  <section id="hub" class="screen">
+    <div class="bar"><div class="logo">Reveal Party <span>EP2</span></div><div class="online"><span class="dot-g"></span><span id="hubN">0</span> en ligne</div></div>
+    <div class="hub-c"><div class="houses" id="houses"></div></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dash" class="screen">
+    <div class="bar">
+      <button class="btn ghost sm" id="btnBack">← Retour</button>
+      <div class="dash-t" id="dashT"></div>
+      <div class="dash-tag" id="dashTag"></div>
+      <button class="btn ghost sm" id="btnShowReviews">📊 Avis</button>
+      <div class="online"><span class="dot-g"></span><span id="dashN">0</span></div>
+    </div>
+    <input type="file" id="fAudio" accept="audio/*" multiple hidden>
+    <input type="file" id="fVideo" accept="video/*" hidden>
+    <input type="file" id="fCover" accept="image/*" hidden>
+    <div class="spec-banner" id="specBanner">👀 Mode spectateur</div>
+    <div class="dash-grid">
+      <div class="dash-col">
+        <div class="panel"><div class="ph"><span>🖼 Cover</span><button class="btn ghost sm owner-only" id="btnCover">+ Image</button></div><div class="pb cover-area" id="coverArea"><div class="empty">Cover</div></div></div>
+        <div class="panel grow"><div class="ph"><span>📋 Tracklist</span></div><div class="pb scroll" id="tracklistView"><div class="empty">Tracklist</div></div></div>
+      </div>
+      <div class="dash-col">
+        <div class="panel grow">
+          <div class="ph"><span>🎵 Lecteur MP3</span><button class="btn ghost sm owner-only" id="btnAudio">+ Son</button></div>
+          <div class="pb scroll" id="mp3List"><div class="empty">Ajoute tes MP3</div></div>
+          <div class="player" id="player">
+            <div class="pl-info"><span class="pl-name" id="plName">—</span><span class="pl-time" id="plTime">0:00</span></div>
+            <div class="pl-bar" id="plBar"><div class="pl-prog" id="plProg"></div></div>
+            <div class="pl-ctrls">
+              <button class="pbtn owner-only" id="plPrev">⏮</button>
+              <button class="pbtn play owner-only" id="plPlay">▶</button>
+              <button class="pbtn owner-only" id="plNext">⏭</button>
+              <button class="pbtn owner-only" id="plStop">⏹</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-col">
+        <div class="panel grow">
+          <div class="ph"><span>🎬 Clip MP4</span><button class="btn ghost sm owner-only" id="btnVideo">+ Vidéo</button></div>
+          <div class="pb clip-prev" id="clipPrev"><div class="empty">Ajoute ton clip</div></div>
+          <div class="clip-foot owner-only" id="clipFoot"><button class="btn accent full owner-only" id="btnClip">🎬 Lancer le clip</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="listen-wrap" id="listenWrap"><button class="btn-listen owner-only" id="btnListen">🎧 Lancer l'écoute</button></div>
+  </section>
+
+  <!-- COVER FULLSCREEN -->
+  <div id="coverFS" class="cover-fs">
+    <canvas id="vizCanvas" class="viz-canvas"></canvas>
+    <div class="cfs-bg" id="cfsBg"></div>
+    <div class="cfs-content">
+      <img id="cfsImg" src="">
+      <div class="cfs-name" id="cfsName"></div>
+      <div class="cfs-bar"><div class="cfs-prog" id="cfsProg"></div></div>
+      <div class="cfs-time" id="cfsTime">0:00 / 0:00</div>
+      <div class="cfs-ctrls">
+        <button class="cfs-btn owner-only" id="cfsPrev">⏮</button>
+        <button class="cfs-btn big owner-only" id="cfsPlay">⏸</button>
+        <button class="cfs-btn owner-only" id="cfsNext">⏭</button>
+        <button class="cfs-btn owner-only" id="cfsStop">⏹</button>
+        <button class="cfs-btn clip-btn owner-only" id="cfsClip">🎬</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERMISSION (between songs) -->
+  <div id="interOv" class="inter-ov">
+    <div class="inter-card">
+      <div class="inter-title" id="interTitle">Fin du son</div>
+      <div class="inter-track" id="interTrack"></div>
+      <!-- Rating (spectators) -->
+      <div class="inter-rate" id="interRate">
+        <div class="rate-label">Ta note :</div>
+        <div class="rate-stars" id="rateStars"></div>
+        <div class="rate-val" id="rateVal">—</div>
+        <textarea class="rate-comment" id="rateComment" placeholder="Un petit avis..." rows="2"></textarea>
+        <button class="btn accent full" id="rateSubmit">Envoyer ma note</button>
+        <div class="rate-sent" id="rateSent"></div>
+      </div>
+      <!-- Host choices -->
+      <div class="inter-host owner-only" id="interHost">
+        <div class="inter-divider">— Hôte —</div>
+        <button class="btn accent full" id="interNext">▶ Son suivant</button>
+        <button class="btn full" id="interClipBtn" style="margin-top:.4rem">🎬 Lancer le clip</button>
+      </div>
+      <!-- Live reviews coming in -->
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS PANEL (modal) -->
+  <div id="reviewsOv" class="reviews-ov">
+    <div class="reviews-panel">
+      <div class="reviews-head"><span>📊 Tous les avis</span><button class="btn ghost sm" id="closeReviews">✕</button></div>
+      <div class="reviews-body" id="reviewsBody"></div>
+    </div>
+  </div>
+
+  <!-- CLIP FULLSCREEN -->
+  <div id="clipFS" class="clip-fs">
+    <video id="clipVideo" playsinline preload="auto"></video>
+  </div>
+
+  <audio id="audio" preload="auto"></audio>
+  <div id="cursors"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
